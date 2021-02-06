@@ -52,8 +52,8 @@ class IntOp : public PowerStaticInst
 {
   protected:
 
-    bool rcSet;
-    bool oeSet;
+    bool rc;
+    bool oe;
 
     // Needed for srawi only
     uint32_t sh;
@@ -61,7 +61,8 @@ class IntOp : public PowerStaticInst
     /// Constructor
     IntOp(const char *mnem, MachInst _machInst, OpClass __opClass)
       : PowerStaticInst(mnem, _machInst, __opClass),
-        rcSet(false), oeSet(false)
+        rc(machInst.rc),
+        oe(machInst.oe)
     {
     }
 
@@ -105,19 +106,52 @@ class IntImmOp : public IntOp
 {
   protected:
 
-    int32_t imm;
-    uint32_t uimm;
+    int32_t si;
+    uint32_t ui;
 
     /// Constructor
     IntImmOp(const char *mnem, MachInst _machInst, OpClass __opClass)
       : IntOp(mnem, _machInst, __opClass),
-        imm(sext<16>(machInst.si)),
-        uimm(machInst.si)
+        si(sext<16>(machInst.si)),
+        ui(machInst.si)
     {
     }
 
     std::string generateDisassembly(
             Addr pc, const Loader::SymbolTable *symtab) const override;
+};
+
+
+/**
+ * Class for integer arithmetic operations.
+ */
+class IntArithOp : public IntOp
+{
+  protected:
+
+    /// Constructor
+    IntArithOp(const char *mnem, MachInst _machInst, OpClass __opClass)
+      : IntOp(mnem, _machInst, __opClass)
+    {
+    }
+};
+
+
+/**
+ * Class for integer immediate arithmetic operations.
+ */
+class IntImmArithOp : public IntArithOp
+{
+  protected:
+
+    int32_t si;
+
+    /// Constructor
+    IntImmArithOp(const char *mnem, MachInst _machInst, OpClass __opClass)
+      : IntArithOp(mnem, _machInst, __opClass),
+        si(sext<16>(machInst.si))
+    {
+    }
 };
 
 
