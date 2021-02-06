@@ -37,6 +37,7 @@
 #include "base/loader/symtab.hh"
 #include "base/logging.hh"
 #include "base/types.hh"
+#include "enums/ByteOrder.hh"
 
 namespace Loader
 {
@@ -78,6 +79,7 @@ class ObjectFile : public ImageFile
   protected:
     Arch arch = UnknownArch;
     OpSys opSys = UnknownOpSys;
+    ByteOrder byteOrder = ByteOrder::little;
 
     SymbolTable _symtab;
 
@@ -104,6 +106,7 @@ class ObjectFile : public ImageFile
 
     Arch  getArch()  const { return arch; }
     OpSys getOpSys() const { return opSys; }
+    ByteOrder getByteOrder() const { return byteOrder; }
 
     const SymbolTable &symtab() const { return _symtab; }
 
