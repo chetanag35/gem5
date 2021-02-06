@@ -30,6 +30,8 @@
 #define __ARCH_POWER_INSTS_BRANCH_HH__
 
 #include "arch/power/insts/static_inst.hh"
+#include "arch/power/ccregs.hh"
+#include "arch/power/miscregs.hh"
 
 namespace PowerISA
 {
@@ -84,7 +86,7 @@ class BranchOp : public PCDependentDisassembly
     {
     }
 
-    PowerISA::PCState branchTarget(const PowerISA::PCState &pc) const override;
+    PowerISA::PCState branchTarget(ThreadContext *tc) const override;
 
     /// Explicitly import the otherwise hidden branchTarget
     using StaticInst::branchTarget;
@@ -155,7 +157,7 @@ class BranchDispCondOp : public BranchCondOp
     {
     }
 
-    PowerISA::PCState branchTarget(const PowerISA::PCState &pc) const override;
+    PowerISA::PCState branchTarget(ThreadContext *tc) const override;
 
     /// Explicitly import the otherwise hidden branchTarget
     using StaticInst::branchTarget;

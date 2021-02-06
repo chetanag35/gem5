@@ -68,6 +68,7 @@ def operands {{
     'CTR': ('ControlReg', 'ud', 'MISCREG_CTR', 'IsInteger', 9),
     'TAR': ('ControlReg', 'ud', 'MISCREG_TAR', 'IsInteger', 9),
     'FPSCR': ('CCReg', 'uw', 'CCREG_FPSCR', 'IsFloating', 9),
+    'MSR': ('CCReg', 'ud', 'CCREG_MSR', 'IsInteger', 9),
 
     # Registers for linked loads and stores
     'Rsv': ('IntReg', 'uw', 'INTREG_RSV', 'IsInteger', 9),

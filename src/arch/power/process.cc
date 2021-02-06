@@ -30,6 +30,8 @@
 #include "arch/power/process.hh"
 
 #include "arch/power/page_size.hh"
+#include "arch/power/ccregs.hh"
+#include "arch/power/miscregs.hh"
 #include "arch/power/types.hh"
 #include "base/loader/elf_object.hh"
 #include "base/loader/object_file.hh"
@@ -274,6 +276,19 @@ PowerProcess::argsInit(int pageSize)
 
     //Set the stack pointer register
     tc->setIntReg(StackPointerReg, stack_min);
+
+    //Set the machine status for a typical userspace
+    Msr msr = 0;
+    msr.sf = (intSize == 8);
+    msr.hv = 1;
+    msr.ee = 1;
+    msr.pr = 1;
+    msr.me = 1;
+    msr.ir = 1;
+    msr.dr = 1;
+    msr.ri = 1;
+    msr.le = (byteOrder == ByteOrder::little);
+    tc->setCCReg(CCREG_MSR, msr);
 
     tc->pcState(getStartPC());
 
