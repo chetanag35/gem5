@@ -38,12 +38,14 @@ enum MiscRegIndex
 {
     MISCREG_LR,
     MISCREG_CTR,
+    MISCREG_TAR,
     NUM_MISCREGS
 };
 
 const char * const miscRegName[NUM_MISCREGS] = {
     "LR",
-    "CTR"
+    "CTR",
+    "TAR"
 };
 
 } // namespace PowerISA
