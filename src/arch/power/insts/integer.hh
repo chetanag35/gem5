@@ -29,6 +29,7 @@
 #ifndef __ARCH_POWER_INSTS_INTEGER_HH__
 #define __ARCH_POWER_INSTS_INTEGER_HH__
 
+#include "arch/power/ccregs.hh"
 #include "arch/power/insts/static_inst.hh"
 #include "arch/power/miscregs.hh"
 #include "base/bitfield.hh"

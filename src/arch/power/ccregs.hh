@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2012 ARM Limited
- * All rights reserved
+ * Copyright (c) 2021 IBM Corporation
+ * All rights reserved.
  *
  * The license below extends only to copyright in the software and shall
  * not be construed as granting a license to any other intellectual
@@ -35,52 +35,80 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "arch/power/isa.hh"
+#ifndef __ARCH_POWER_CCREGS_HH__
+#define __ARCH_POWER_CCREGS_HH__
 
-#include "arch/power/ccregs.hh"
-#include "arch/power/miscregs.hh"
-#include "arch/power/registers.hh"
-#include "cpu/thread_context.hh"
-#include "params/PowerISA.hh"
+#include "base/bitunion.hh"
 
 namespace PowerISA
 {
 
-ISA::ISA(const Params &p) : BaseISA(p)
+enum CCRegIndex
 {
-    _regClasses.insert(_regClasses.end(), {
-            { NumIntRegs },
-            { NumFloatRegs },
-            { 1 },
-            { 2 },
-            { 1 },
-            { NUM_CCREGS },
-            { NUM_MISCREGS }
-    });
-    clear();
-}
+    CCREG_CR,
+    CCREG_XER,
+    CCREG_FPSCR,
+    NUM_CCREGS
+};
 
-void
-ISA::copyRegsFrom(ThreadContext *src)
-{
-    // First loop through the integer registers.
-    for (int i = 0; i < NumIntRegs; ++i)
-        tc->setIntReg(i, src->readIntReg(i));
+const char * const ccRegName[NUM_CCREGS] = {
+    "CR",
+    "XER",
+    "FPSCR"
+};
 
-    // Then loop through the floating point registers.
-    for (int i = 0; i < NumFloatRegs; ++i)
-        tc->setFloatReg(i, src->readFloatReg(i));
+BitUnion32(Cr)
+    SubBitUnion(cr0, 31, 28)
+        Bitfield<31> lt;
+        Bitfield<30> gt;
+        Bitfield<29> eq;
+        Bitfield<28> so;
+    EndSubBitUnion(cr0)
+    Bitfield<27,24> cr1;
+EndBitUnion(Cr)
 
-    // Then loop through the condition code registers.
-    for (int i = 0; i < NUM_CCREGS; ++i)
-        tc->setCCReg(i, src->readCCReg(i));
+BitUnion32(Xer)
+    Bitfield<31> so;
+    Bitfield<30> ov;
+    Bitfield<29> ca;
+EndBitUnion(Xer)
 
-    // And finally, the miscellaneous registers.
-    for (int i = 0; i < NUM_MISCREGS; ++i)
-        tc->setMiscReg(i, src->readMiscReg(i));
+BitUnion32(Fpscr)
+    Bitfield<31> fx;
+    Bitfield<30> fex;
+    Bitfield<29> vx;
+    Bitfield<28> ox;
+    Bitfield<27> ux;
+    Bitfield<26> zx;
+    Bitfield<25> xx;
+    Bitfield<24> vxsnan;
+    Bitfield<23> vxisi;
+    Bitfield<22> vxidi;
+    Bitfield<21> vxzdz;
+    Bitfield<20> vximz;
+    Bitfield<19> vxvc;
+    Bitfield<18> fr;
+    Bitfield<17> fi;
+    SubBitUnion(fprf, 16, 12)
+        Bitfield<16> c;
+        SubBitUnion(fpcc, 15, 12)
+            Bitfield<15> fl;
+            Bitfield<14> fg;
+            Bitfield<13> fe;
+            Bitfield<12> fu;
+        EndSubBitUnion(fpcc)
+    EndSubBitUnion(fprf)
+    Bitfield<10> vxsqrt;
+    Bitfield<9> vxcvi;
+    Bitfield<8> ve;
+    Bitfield<7> oe;
+    Bitfield<6> ue;
+    Bitfield<5> ze;
+    Bitfield<4> xe;
+    Bitfield<3> ni;
+    Bitfield<2,1> rn;
+EndBitUnion(Fpscr)
 
-    // Lastly copy PC/NPC
-    tc->pcState(src->pcState());
-}
+} // namespace PowerISA
 
-}
+#endif // __ARCH_POWER_CCREGS_HH__

@@ -45,9 +45,16 @@ IntOp::generateDisassembly(Addr pc, const Loader::SymbolTable *symtab) const
     if (!myMnemonic.compare("or") && srcRegIdx(0) == srcRegIdx(1)) {
         myMnemonic = "mr";
         printSecondSrc = false;
-    } else if (!myMnemonic.compare("mtlr") || !myMnemonic.compare("cmpi")) {
+    } else if (myMnemonic == "mtcrf" ||
+               myMnemonic == "mtxer" ||
+               myMnemonic == "mtlr"  ||
+               myMnemonic == "mtctr" ||
+               myMnemonic == "cmpi") {
         printDest = false;
-    } else if (!myMnemonic.compare("mflr")) {
+    } else if (myMnemonic == "mfcr"  ||
+               myMnemonic == "mfxer" ||
+               myMnemonic == "mflr"  ||
+               myMnemonic == "mfctr") {
         printSrcs = false;
     }
 

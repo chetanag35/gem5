@@ -29,6 +29,8 @@
 
 #include "arch/power/insts/static_inst.hh"
 
+#include "arch/power/ccregs.hh"
+#include "arch/power/miscregs.hh"
 #include "cpu/reg_class.hh"
 
 using namespace PowerISA;
@@ -40,17 +42,23 @@ PowerStaticInst::printReg(std::ostream &os, RegId reg) const
         ccprintf(os, "r%d", reg.index());
     else if (reg.isFloatReg())
         ccprintf(os, "f%d", reg.index());
-    else if (reg.isMiscReg())
-        switch (reg.index()) {
-          case 0: ccprintf(os, "cr"); break;
-          case 1: ccprintf(os, "xer"); break;
-          case 2: ccprintf(os, "lr"); break;
-          case 3: ccprintf(os, "ctr"); break;
-          default: ccprintf(os, "unknown_reg");
-            break;
+    else if (reg.isCCReg()) {
+        if (reg.index() >= NUM_CCREGS) {
+            ccprintf(os, "unknown_reg");
+            return;
         }
-    else if (reg.isCCReg())
-        panic("printReg: POWER does not implement CCRegClass\n");
+        std::string name = ccRegName[reg.index()];
+        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+        ccprintf(os, "%s", name.c_str());
+    } else if (reg.isMiscReg()) {
+        if (reg.index() >= NUM_MISCREGS) {
+            ccprintf(os, "unknown_reg");
+            return;
+        }
+        std::string name = miscRegName[reg.index()];
+        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+        ccprintf(os, "%s", name.c_str());
+    }
 }
 
 std::string

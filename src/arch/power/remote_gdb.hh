@@ -32,6 +32,8 @@
 #ifndef __ARCH_POWER_REMOTE_GDB_HH__
 #define __ARCH_POWER_REMOTE_GDB_HH__
 
+#include "arch/power/ccregs.hh"
+#include "arch/power/miscregs.hh"
 #include "arch/power/registers.hh"
 #include "arch/power/remote_gdb.hh"
 #include "base/remote_gdb.hh"

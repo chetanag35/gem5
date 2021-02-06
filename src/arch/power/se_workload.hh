@@ -28,7 +28,7 @@
 #ifndef __ARCH_POWER_SE_WORKLOAD_HH__
 #define __ARCH_POWER_SE_WORKLOAD_HH__
 
-#include "arch/power/miscregs.hh"
+#include "arch/power/ccregs.hh"
 #include "arch/power/registers.hh"
 #include "params/PowerSEWorkload.hh"
 #include "sim/se_workload.hh"
@@ -66,13 +66,13 @@ struct Result<PowerISA::SEWorkload::SyscallABI, SyscallReturn>
         if (ret.suppressed() || ret.needsRetry())
             return;
 
-        PowerISA::Cr cr = tc->readIntReg(PowerISA::INTREG_CR);
+        PowerISA::Cr cr = tc->readCCReg(PowerISA::CCREG_CR);
         if (ret.successful()) {
             cr.cr0.so = 0;
         } else {
             cr.cr0.so = 1;
         }
-        tc->setIntReg(PowerISA::INTREG_CR, cr);
+        tc->setCCReg(PowerISA::CCREG_CR, cr);
         tc->setIntReg(PowerISA::ReturnValueReg, ret.encodedValue());
     }
 };
